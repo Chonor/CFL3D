@@ -46,22 +46,21 @@
 # *************** COMPILER FLAG DEFINITIONS (MACHINE SPECIFIC) ***************
 #                 (CURRENT DEFINITIONS FOR LINUX ARCHITECTURE)
 
-FFLAG        = -O2 -g -ffast-math -w -ip -fno-alias -xHost -traceback -module ../../$(CFLLIBSD) 
-FFLAG_SPEC   = -O2 -g -ffast-math -w -ip -fno-alias -xHost -traceback -module ../../$(CFLLIBSD)
+FFLAG        = -O2 -w -ip -fno-alias -xHost -traceback -fpe0 -module <path>/CFL3D/build/$(CFLLIBSD)
+FFLAG_SPEC   = -O2 -w -ip -fno-alias -xHost -traceback -fpe0 -module <path>/CFL3D/build/$(CFLLIBSD)
 PREC         = -r8
 PREC_MPI     = -DDBLE_PRECSN
-LFLAG        = -z muldefs -xHost -traceback -fpe0
-LLIBS        = 
-LLIBS_SEQ    = 
+LFLAG        = -z muldefs -xHost -traceback -fpe0 
+LLIBS        = -L<path>/CFL3D/external/cgns/lib/ -lcgns
+LLIBS_SEQ    = -L<path>/CFL3D/external/cgns/lib/ -lcgns
 MPI_INCDIR   = 
-CGNS_INCDIR  = 
+CGNS_INCDIR  = -I<path>/CFL3D/external/cgns/include
 CPP          = cpp
 CPPFLAG      = -P
-CPPOPT       =  $(MPI_INCDIR) -DDIST_MPI $(PREC_MPI)
-CPPOPT_SP    = -DP3D_SINGLE -DLINUX -DINTEL -DNOREDIRECT $(PREC_MPI) $(CGNS_INCDIR)
+CPPOPT       = $(MPI_INCDIR) -DDIST_MPI $(PREC_MPI)
+CPPOPT_SP    = -DP3D_SINGLE -DLINUX -DINTEL -DCGNS $(PREC_MPI) $(CGNS_INCDIR)
 CPPOPT_CMPLX = -DCMPLX
-FTN          = mpif90
-CC           = mpicc
+FTN          = mpiifort
 CFLAG        = 
 AROPT        = rusc
 RANLIB       = true
@@ -383,7 +382,6 @@ Zlibs:
 	AROPT="$(AROPT)" \
 	RANLIB="$(RANLIB)" \
 	CPP="$(CPP)" \
-	CC="$(CC)" \
 	CFLAG="$(CFLAG)" \
 	LLIBS="$(LLIBS)" \
 	FTN="$(FTN)" \
@@ -437,7 +435,6 @@ Zcmplxlibs:
 	AROPT="$(AROPT)" \
 	RANLIB="$(RANLIB)" \
 	CPP="$(CPP)" \
-	CC="$(CC)" \
 	CFLAG="$(CFLAG)" \
 	LLIBS="$(LLIBS)" \
 	FTN="$(FTN)" \
@@ -768,3 +765,7 @@ scruball: scrub$(EXEC_CFLMPI) scrub$(EXEC_CFLLIBS) \
 	scrub$(EXEC_CFLCMPLXMPI) scrub$(EXEC_CFLCMPLXLIBS) \
 	scrub$(EXEC_CFLCMPLXSEQ) scrub$(EXEC_TOOLS) \
 	scrub$(EXEC_SPLITCMPLX)
+
+clean:
+	make scruball
+	rm -rf bin
